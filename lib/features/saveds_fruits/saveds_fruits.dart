@@ -4,14 +4,14 @@ import 'package:flutter_fruit_app/repositories/models/fruit.dart';
 import 'package:flutter_fruit_app/repositories/list_all_fruets/list_all_fruets_repositories.dart';
 import 'package:flutter_fruit_app/repositories/models/saveds_fruits_helper.dart';
 
-class SavedsFruets extends StatefulWidget {
-  const SavedsFruets({super.key});
+class SavedFruits extends StatefulWidget {
+  const SavedFruits({super.key});
 
   @override
-  State<StatefulWidget> createState() => _SavedsFruetsState();
+  State<StatefulWidget> createState() => _SavedFruitsState();
 }
 
-class _SavedsFruetsState extends State<SavedsFruets> {
+class _SavedFruitsState extends State<SavedFruits> {
   late Future<List<Fruit>> futureFruits;
 
   @override
@@ -23,7 +23,9 @@ class _SavedsFruetsState extends State<SavedsFruets> {
   Future<List<Fruit>> _getFavoriteFruits() async {
     final favoriteFruitIds = await SavedsFruitsHelper.getFavoriteFruitIds();
     final fruits = await ListAllFruitsRepositories().getFruits();
-    return fruits.where((fruit) => favoriteFruitIds.contains(fruit.id)).toList();
+    return fruits
+        .where((fruit) => favoriteFruitIds.contains(fruit.id))
+        .toList();
   }
 
   @override
@@ -35,7 +37,9 @@ class _SavedsFruetsState extends State<SavedsFruets> {
           if (snapshot.hasData) {
             final fruits = snapshot.data!;
             if (fruits.isEmpty) {
-              return Center(child: Text('Вы пока ничего не добавили в избранное'));
+              return Center(
+                child: Text('Вы пока ничего не добавили в избранное'),
+              );
             }
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -54,14 +58,22 @@ class _SavedsFruetsState extends State<SavedsFruets> {
                       if (snapshot.hasData) {
                         final isFavorite = snapshot.data!;
                         return IconButton(
-                          icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                          ),
                           onPressed: () async {
                             if (isFavorite) {
-                              await SavedsFruitsHelper.removeFavoriteFruit(fruit.id);
+                              await SavedsFruitsHelper.removeFavoriteFruit(
+                                fruit.id,
+                              );
                             } else {
-                              await SavedsFruitsHelper.addFavoriteFruit(fruit.id);
+                              await SavedsFruitsHelper.addFavoriteFruit(
+                                fruit.id,
+                              );
                             }
-                            setState(() {}); // Обновляем состояние
+                            setState(() {
+                              futureFruits = _getFavoriteFruits();
+                            });
                           },
                         );
                       } else {
@@ -70,11 +82,19 @@ class _SavedsFruetsState extends State<SavedsFruets> {
                     },
                   ),
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => FruitsInfo(selectedFruit: fruit),
-                      ),
-                    );
+                    Navigator.of(context)
+                        .push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                FruitsInfo(selectedFruit: fruit),
+                          ),
+                        )
+                        .then(
+                          (value) => {
+                            if (value != null && value is bool)
+                              {setState(() {})},
+                          },
+                        );
                   },
                 );
               },

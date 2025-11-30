@@ -66,7 +66,7 @@ class _HomePageState extends State<StatefulWidget>
           ),
           body: TabBarView(
             controller: tabController,
-            children: [ListAllFruits(), SavedsFruets(), Recipes()],
+            children: [ListAllFruits(), SavedFruits(), Recipes()],
           ),
         ),
       ),
