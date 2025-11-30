@@ -18,10 +18,10 @@ class _HomePageState extends State<StatefulWidget>
   void updateTitle(int index) {
     switch (index) {
       case 0:
-        setState(() => currentTitle = "Все фрукты");
+        setState(() => currentTitle = "Фрукты");
         break;
       case 1:
-        setState(() => currentTitle = "Избранные фрукты");
+        setState(() => currentTitle = "Избранное");
         break;
       case 2:
         setState(() => currentTitle = "Рецепты");

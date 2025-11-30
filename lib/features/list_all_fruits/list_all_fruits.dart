@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fruit_app/features/fruits_info/fruits_info.dart';
 import 'package:flutter_fruit_app/repositories/list_all_fruets/list_all_fruets_repositories.dart';
 import 'package:flutter_fruit_app/repositories/models/fruit.dart';
+import 'package:flutter_fruit_app/repositories/models/saveds_fruits_helper.dart';
 
 class ListAllFruits extends StatefulWidget {
   const ListAllFruits({super.key});
@@ -10,7 +11,7 @@ class ListAllFruits extends StatefulWidget {
   State<StatefulWidget> createState() => _ListAllFruitsState();
 }
 
-class _ListAllFruitsState extends State<StatefulWidget> {
+class _ListAllFruitsState extends State<ListAllFruits> {
   late Future<List<Fruit>> futureFruits;
 
   @override
@@ -38,13 +39,37 @@ class _ListAllFruitsState extends State<StatefulWidget> {
                 return ListTile(
                   title: Text(fruit.name),
                   subtitle: Text(fruit.family),
-                  trailing: Icon(Icons.favorite_border),
+                  trailing: FutureBuilder<bool>(
+                    future: SavedsFruitsHelper.isFavorite(fruit.id),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final isFavorite = snapshot.data!;
+                        return IconButton(
+                          icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
+                          onPressed: () async {
+                            if (isFavorite) {
+                              await SavedsFruitsHelper.removeFavoriteFruit(fruit.id);
+                            } else {
+                              await SavedsFruitsHelper.addFavoriteFruit(fruit.id);
+                            }
+                            setState(() {}); // Обновляем состояние
+                          },
+                        );
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    },
+                  ),
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => FruitsInfo(selectedFruit: fruit),
                       ),
-                    );
+                    ).then((value) {
+                      if (value != null && value is bool) {
+                        setState(() {}); // Обновляем состояние при возвращении
+                      }
+                    });
                   },
                 );
               },
