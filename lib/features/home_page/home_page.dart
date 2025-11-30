@@ -10,8 +10,7 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<StatefulWidget>
-    with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late final TabController tabController;
   String currentTitle = "";
 
@@ -48,27 +47,21 @@ class _HomePageState extends State<StatefulWidget>
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: DefaultTabController(
-        length: 3,
-        initialIndex: 0,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(currentTitle),
-            bottom: TabBar(
-              controller: tabController,
-              tabs: [
-                Tab(icon: Icon(Icons.home)),
-                Tab(icon: Icon(Icons.favorite)),
-                Tab(icon: Icon(Icons.list)),
-              ],
-            ),
-          ),
-          body: TabBarView(
-            controller: tabController,
-            children: [ListAllFruits(), SavedFruits(), Recipes()],
-          ),
+    return Scaffold( // Оставляем только один Scaffold
+      appBar: AppBar(
+        title: Text(currentTitle),
+        bottom: TabBar(
+          controller: tabController,
+          tabs: [
+            Tab(icon: Icon(Icons.home)),
+            Tab(icon: Icon(Icons.favorite)),
+            Tab(icon: Icon(Icons.list)),
+          ],
         ),
+      ),
+      body: TabBarView(
+        controller: tabController,
+        children: [ListAllFruits(), SavedFruits(), Recipes()],
       ),
     );
   }

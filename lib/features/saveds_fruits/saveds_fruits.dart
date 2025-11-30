@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fruit_app/features/fruits_info/fruits_info.dart';
 import 'package:flutter_fruit_app/repositories/models/fruit.dart';
 import 'package:flutter_fruit_app/repositories/list_all_fruets/list_all_fruets_repositories.dart';
-import 'package:flutter_fruit_app/repositories/models/saveds_fruits_helper.dart';
+import 'package:flutter_fruit_app/repositories/models/fruits_storage.dart';
 
 class SavedFruits extends StatefulWidget {
   const SavedFruits({super.key});
@@ -21,7 +21,7 @@ class _SavedFruitsState extends State<SavedFruits> {
   }
 
   Future<List<Fruit>> _getFavoriteFruits() async {
-    final favoriteFruitIds = await SavedsFruitsHelper.getFavoriteFruitIds();
+    final favoriteFruitIds = await FruitsStorage.getFavoriteFruitIds();
     final fruits = await ListAllFruitsRepositories().getFruits();
     return fruits
         .where((fruit) => favoriteFruitIds.contains(fruit.id))
@@ -53,7 +53,7 @@ class _SavedFruitsState extends State<SavedFruits> {
                   title: Text(fruit.name),
                   subtitle: Text(fruit.family),
                   trailing: FutureBuilder<bool>(
-                    future: SavedsFruitsHelper.isFavorite(fruit.id),
+                    future: FruitsStorage.isFavorite(fruit.id),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         final isFavorite = snapshot.data!;
@@ -63,11 +63,11 @@ class _SavedFruitsState extends State<SavedFruits> {
                           ),
                           onPressed: () async {
                             if (isFavorite) {
-                              await SavedsFruitsHelper.removeFavoriteFruit(
+                              await FruitsStorage.removeFavoriteFruit(
                                 fruit.id,
                               );
                             } else {
-                              await SavedsFruitsHelper.addFavoriteFruit(
+                              await FruitsStorage.addFavoriteFruit(
                                 fruit.id,
                               );
                             }

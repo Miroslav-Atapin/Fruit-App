@@ -25,6 +25,7 @@ class Fruit {
     this.isFavorite = false,
   });
 
+  // Конструктор для десериализации из JSON
   factory Fruit.fromJson(Map<String, dynamic> json) {
     return Fruit(
       id: json['id'],
@@ -32,13 +33,30 @@ class Fruit {
       family: json['family'] ?? '',
       order: json['order'] ?? '',
       genus: json['genus'] ?? '',
-      carbohydrates:
-          json['nutritions']['carbohydrates']?.roundToDouble() ?? 0.0,
+      carbohydrates: json['nutritions']['carbohydrates']?.roundToDouble() ?? 0.0,
       protein: json['nutritions']['protein']?.roundToDouble() ?? 0.0,
       fat: json['nutritions']['fat']?.roundToDouble() ?? 0.0,
       calories: json['nutritions']['calories'] ?? 0,
       sugar: json['nutritions']['sugar']?.roundToDouble() ?? 0.0,
     );
+  }
+
+  // Метод для сериализации в JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'family': family,
+      'order': order,
+      'genus': genus,
+      'nutritions': {
+        'carbohydrates': carbohydrates,
+        'protein': protein,
+        'fat': fat,
+        'calories': calories,
+        'sugar': sugar,
+      },
+    };
   }
 
   void toggleFavorite() {

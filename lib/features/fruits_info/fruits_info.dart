@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fruit_app/repositories/models/fruit.dart';
-import 'package:flutter_fruit_app/repositories/models/saveds_fruits_helper.dart';
+import 'package:flutter_fruit_app/repositories/models/fruits_storage.dart';
 
 class FruitsInfo extends StatefulWidget {
   final Fruit selectedFruit;
@@ -21,7 +21,7 @@ class _FruitsInfoState extends State<FruitsInfo> {
   }
 
   Future<void> _checkFavoriteStatus() async {
-    final isFavorite = await SavedsFruitsHelper.isFavorite(
+    final isFavorite = await FruitsStorage.isFavorite(
       widget.selectedFruit.id,
     );
     setState(() {
@@ -44,11 +44,11 @@ class _FruitsInfoState extends State<FruitsInfo> {
             icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
             onPressed: () async {
               if (isFavorite) {
-                await SavedsFruitsHelper.removeFavoriteFruit(
+                await FruitsStorage.removeFavoriteFruit(
                   widget.selectedFruit.id,
                 );
               } else {
-                await SavedsFruitsHelper.addFavoriteFruit(
+                await FruitsStorage.addFavoriteFruit(
                   widget.selectedFruit.id,
                 );
               }

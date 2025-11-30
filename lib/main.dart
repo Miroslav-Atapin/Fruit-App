@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fruit_app/features/home_page/home_page.dart';
+import 'package:flutter_fruit_app/features/themes/themes.dart';
 
 void main(){
   runApp(const FruitApp());
@@ -11,7 +12,7 @@ class FruitApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(),
+      theme: appTheme,
       home: HomePage(),
     );
   }
