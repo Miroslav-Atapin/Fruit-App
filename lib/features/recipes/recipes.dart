@@ -25,67 +25,21 @@ class _RecipesState extends State<Recipes> {
     });
   }
 
-  // Отображаем список рецептов
-  Widget buildRecipeList() {
-    return ListView.separated(
-      separatorBuilder: (context, index) => Divider(thickness: 1),
-      padding: EdgeInsets.all(16),
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: recipes.length,
-      itemBuilder: (context, index) {
-        final recipe = recipes[index];
-        final ingredients = recipe['ingredients'].cast<Map<String, dynamic>>();
-        final totalNutrition = calculateTotalNutrition(ingredients);
-
-        return Card(
-          elevation: 2,
-          color: Colors.white,
-          child: Column(
-            children: [
-              Text(
-                recipe['title'],
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-
-              Text(recipe['description']),
-
-              Text(
-                'Состав: ${ingredients.map((fruit) => fruit['name']).join(', ')}',
-              ),
-
-              Text(
-                'Калории: ${totalNutrition['calories']} ккал\nБелки: ${totalNutrition['proteins']} г\nЖиры: ${totalNutrition['fats']} г\nУглеводы: ${totalNutrition['carbohydrates']} г',
-              ),
-              Row(
-                children: [
-                  Spacer(),
-                  TextButton.icon(
-                    icon: Icon(Icons.delete),
-                    label: Text('Удалить'),
-                    onPressed: () async {
-                      await RecipeStorage.deleteRecipeByTitle(recipe['title']);
-                      loadRecipes();
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
+  Future<void> _refreshRecipes() async {
+    setState(() {
+      loadRecipes();
+    });
   }
 
-  Map<String, num> calculateTotalNutrition(
+  Map<String, double> calculateTotalNutrition(
     List<Map<String, dynamic>> ingredients,
   ) {
-    var calories = 0.0;
-    var proteins = 0.0;
-    var fats = 0.0;
-    var carbohydrates = 0.0;
+    double calories = 0.0;
+    double proteins = 0.0;
+    double fats = 0.0;
+    double carbohydrates = 0.0;
 
-    for (final ingredient in ingredients) {
+    for (var ingredient in ingredients) {
       calories += ingredient['nutritions']['calories'] ?? 0.0;
       proteins += ingredient['nutritions']['proteins'] ?? 0.0;
       fats += ingredient['nutritions']['fats'] ?? 0.0;
@@ -93,11 +47,115 @@ class _RecipesState extends State<Recipes> {
     }
 
     return {
-      'calories': calories.roundToDouble(),
-      'proteins': proteins.roundToDouble(),
-      'fats': fats.roundToDouble(),
-      'carbohydrates': carbohydrates.roundToDouble(),
+      'calories': calories,
+      'proteins': proteins,
+      'fats': fats,
+      'carbohydrates': carbohydrates,
     };
+  }
+
+  double sumOfNutrients(Map<String, double> nutritionValues) {
+    return nutritionValues.values.fold<double>(
+      0.0,
+      (prev, element) => prev + element,
+    );
+  }
+
+  Widget buildRecipeCard(Map<String, dynamic> recipe) {
+    final ingredients = recipe['ingredients'];
+    final totalNutrition = calculateTotalNutrition(
+      ingredients.cast<Map<String, dynamic>>(),
+    );
+    final totalSum = sumOfNutrients(totalNutrition);
+
+    return GestureDetector(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 8,
+              spreadRadius: 2,
+              offset: Offset(0, 4),
+              color: Colors.black.withOpacity(0.1),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.all(16),
+        margin: EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              recipe['title'],
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Text(
+                recipe['description'],
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Text(
+                'Полезные вещества:',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 4),
+              child: Text(
+                'Суммма полезных веществ ${totalSum.toStringAsFixed(1)}',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 4),
+              child: Text(
+                'Калорийность: ${totalNutrition['calories']?.toStringAsFixed(1)} ккал\n'
+                'Белки: ${totalNutrition['proteins']?.toStringAsFixed(1)} г\n'
+                'Жиры: ${totalNutrition['fats']?.toStringAsFixed(1)} г\n'
+                'Углеводы: ${totalNutrition['carbohydrates']?.toStringAsFixed(1)} г',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: OutlinedButton.icon(
+                icon: Icon(Icons.delete),
+                label: Text('Удалить'),
+                onPressed: () async {
+                  await RecipeStorage.deleteRecipeByTitle(recipe['title']);
+                  loadRecipes();
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildRecipeList() {
+    return ScrollConfiguration(
+      behavior: ScrollBehavior(),
+      child: RefreshIndicator(
+        onRefresh: _refreshRecipes,
+        child: ListView.builder(
+          padding: EdgeInsets.all(16),
+          shrinkWrap: true,
+          physics: AlwaysScrollableScrollPhysics(),
+          itemCount: recipes.length,
+          itemBuilder: (context, index) {
+            final recipe = recipes[index];
+            return buildRecipeCard(recipe);
+          },
+        ),
+      ),
+    );
   }
 
   @override

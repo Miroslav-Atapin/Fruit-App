@@ -53,20 +53,23 @@ class _CreateNewRecipeState extends State<CreateNewRecipe> {
     });
   }
 
-  // Сборка рецепта и сохранение
   Future<void> saveRecipe() async {
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
-    final chosenIngredients = selectedIndexes.map((i) => selectedFruits!.elementAt(i)).toList();
+    final chosenIngredients = selectedIndexes
+        .map((i) => selectedFruits!.elementAt(i))
+        .toList();
 
     if (title.isEmpty || chosenIngredients.isEmpty) {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text('Ошибка'),
-          content: Text('Заполните название рецепта и выберите хотя бы один ингредиент.'),
+          content: Text(
+            'Заполните название рецепта и выберите хотя бы один ингредиент.',
+          ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: Text('OK'))
+            TextButton(onPressed: () => Navigator.pop(ctx), child: Text('OK')),
           ],
         ),
       );
@@ -81,7 +84,13 @@ class _CreateNewRecipeState extends State<CreateNewRecipe> {
           title: Text('Готово'),
           content: Text('Ваш рецепт успешно сохранён!'),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: Text('ОК')),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                Navigator.pop(context);
+              },
+              child: Text('ОК'),
+            ),
           ],
         ),
       );
@@ -115,13 +124,17 @@ class _CreateNewRecipeState extends State<CreateNewRecipe> {
                 labelText: 'Название рецепта*',
               ),
             ),
-            TextField(
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Описание рецепта',
+            Padding(
+              // Оборачиваем второе поле в padding
+              padding: EdgeInsets.only(top: 16), // Верхний отступ
+              child: TextField(
+                controller: _descriptionController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Описание рецепта',
+                ),
+                maxLines: null,
               ),
-              maxLines: null,
             ),
             Divider(height: 32),
             Expanded(
@@ -152,16 +165,18 @@ class _CreateNewRecipeState extends State<CreateNewRecipe> {
               ),
             ),
             Spacer(),
-            // Кнопка Сохранить
-            Container(
-              width: double.maxFinite,
-              height: 50,
-              margin: EdgeInsets.symmetric(horizontal: 16),
-              child: ElevatedButton(
-                child: Text('Сохранить'),
-                onPressed: () async {
-                  await saveRecipe();
-                },
+            Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: Container(
+                width: double.maxFinite,
+                height: 50,
+                margin: EdgeInsets.symmetric(horizontal: 16),
+                child: ElevatedButton(
+                  child: Text('Сохранить'),
+                  onPressed: () async {
+                    await saveRecipe();
+                  },
+                ),
               ),
             ),
           ],

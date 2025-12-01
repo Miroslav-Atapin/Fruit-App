@@ -21,9 +21,7 @@ class _FruitsInfoState extends State<FruitsInfo> {
   }
 
   Future<void> _checkFavoriteStatus() async {
-    final isFavorite = await FruitsStorage.isFavorite(
-      widget.selectedFruit.id,
-    );
+    final isFavorite = await FruitsStorage.isFavorite(widget.selectedFruit.id);
     setState(() {
       this.isFavorite = isFavorite;
     });
@@ -48,9 +46,7 @@ class _FruitsInfoState extends State<FruitsInfo> {
                   widget.selectedFruit.id,
                 );
               } else {
-                await FruitsStorage.addFavoriteFruit(
-                  widget.selectedFruit.id,
-                );
+                await FruitsStorage.addFavoriteFruit(widget.selectedFruit.id);
               }
               setState(() {
                 isFavorite = !isFavorite;
@@ -59,18 +55,145 @@ class _FruitsInfoState extends State<FruitsInfo> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Text(widget.selectedFruit.name),
-          Text(widget.selectedFruit.family),
-          Text(widget.selectedFruit.order),
-          Text(widget.selectedFruit.genus),
-          Text('${widget.selectedFruit.calories}'),
-          Text('${widget.selectedFruit.fat}'),
-          Text('${widget.selectedFruit.sugar}'),
-          Text('${widget.selectedFruit.carbohydrates}'),
-          Text('${widget.selectedFruit.protein}'),
-        ],
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            GestureDetector(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 8,
+                      spreadRadius: 2,
+                      offset: Offset(0, 4),
+                      color: Colors.black.withOpacity(0.1),
+                    ),
+                  ],
+                ),
+                padding: EdgeInsets.all(16),
+                margin: EdgeInsets.all(8),
+                child: Column(
+                  children: [
+                    Text(
+                      widget.selectedFruit.name,
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    Divider(height: 16),
+                    Table(
+                      columnWidths: {
+                        0: FlexColumnWidth(), // Гибкая первая колонка
+                        1: FixedColumnWidth(
+                          120,
+                        ), // Фиксированная вторая колонка
+                      },
+                      children: [
+                        TableRow(
+                          children: [
+                            Text(
+                              'Семейство',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            Text(
+                              widget.selectedFruit.family,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(
+                              'Порядок',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            Text(
+                              widget.selectedFruit.order,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(
+                              'Род',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            Text(
+                              widget.selectedFruit.genus,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(
+                              'Калории',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            Text(
+                              '${widget.selectedFruit.calories}',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(
+                              'Жир',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            Text(
+                              '${widget.selectedFruit.fat}',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(
+                              'Сахар',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            Text(
+                              '${widget.selectedFruit.sugar}',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(
+                              'Углеводы',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            Text(
+                              '${widget.selectedFruit.carbohydrates}',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(
+                              'Белки',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            Text(
+                              '${widget.selectedFruit.protein}',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
