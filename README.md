@@ -1,16 +1,17 @@
-# flutter_fruit_app
+# Fruit App
 
-A new Flutter project.
+## Что удалось сделать
+- Просмотр списка фруктов из публичного API
+- Просмотр информации о фруктах
+- Добавление избранных фруктов
+- Создание рецептов из избранных фруктов
 
-## Getting Started
+## Что сделать не удалось
+- Не совсем корректная работа локального хранилища
+- Фильтрация списка фруктов
 
-This project is a starting point for a Flutter application.
+## Работа приложения
 
-A few resources to get you started if this is your first Flutter project:
+https://github.com/user-attachments/assets/7ef5beae-afbe-4ca8-9722-de962fb72d84
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
