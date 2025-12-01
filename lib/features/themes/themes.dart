@@ -5,7 +5,7 @@ final appTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 255, 135, 98)),
   appBarTheme: AppBarTheme(
     backgroundColor: Colors.white,
-    foregroundColor: Colors.black,
+    foregroundColor: Color.fromARGB(255, 84, 66, 64),
     centerTitle: true,
     elevation: 0,
   ),

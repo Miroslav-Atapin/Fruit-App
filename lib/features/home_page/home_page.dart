@@ -10,7 +10,8 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   late final TabController tabController;
   String currentTitle = "";
 
@@ -37,6 +38,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         updateTitle(tabController.index);
       }
     });
+    updateTitle(tabController.index);
   }
 
   @override
@@ -47,7 +49,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold( // Оставляем только один Scaffold
+    return Scaffold(
       appBar: AppBar(
         title: Text(currentTitle),
         bottom: TabBar(
@@ -55,7 +57,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           tabs: [
             Tab(icon: Icon(Icons.home)),
             Tab(icon: Icon(Icons.favorite)),
-            Tab(icon: Icon(Icons.list)),
+            Tab(icon: Icon(Icons.menu_book)),
           ],
         ),
       ),

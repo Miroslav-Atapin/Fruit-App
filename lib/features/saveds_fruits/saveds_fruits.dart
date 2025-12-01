@@ -92,12 +92,18 @@ class _SavedFruitsState extends State<SavedFruits> {
                                   children: [
                                     Text(
                                       fruit.name,
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: false,
+                                      maxLines: 1,
                                       style: Theme.of(
                                         context,
                                       ).textTheme.titleMedium,
                                     ),
                                     Text(
                                       fruit.family,
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: false,
+                                      maxLines: 1,
                                       style: Theme.of(
                                         context,
                                       ).textTheme.bodySmall,
