@@ -162,7 +162,7 @@ class _SavedFruitsState extends State<SavedFruits> {
                           futureFruits = _getFavoriteFruits();
                         });
                       },
-                      child: Text('Обновить страницу'),
+                      child: Text('Перезагрузить'),
                     ),
                   ],
                 ),

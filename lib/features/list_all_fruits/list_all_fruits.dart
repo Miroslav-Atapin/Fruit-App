@@ -35,7 +35,26 @@ class _ListAllFruitsState extends State<ListAllFruits> {
         child: FutureBuilder<List<Fruit>>(
           future: futureFruits,
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Произошла ошибка'),
+                    ElevatedButton(
+                      child: Text('Повторить'),
+                      onPressed: () {
+                        setState(() {
+                          futureFruits = ListAllFruitsRepositories().getFruits();
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              );
+            } else if (snapshot.hasData) {
               final fruits = snapshot.data!;
               return StaggeredGridView.countBuilder(
                 crossAxisCount: 2,
@@ -80,18 +99,14 @@ class _ListAllFruitsState extends State<ListAllFruits> {
                                       overflow: TextOverflow.ellipsis,
                                       softWrap: false,
                                       maxLines: 1,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleMedium,
+                                      style: Theme.of(context).textTheme.titleMedium,
                                     ),
                                     Text(
                                       fruit.family,
                                       overflow: TextOverflow.ellipsis,
                                       softWrap: false,
                                       maxLines: 1,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.labelSmall,
+                                      style: Theme.of(context).textTheme.labelSmall,
                                     ),
                                   ],
                                 ),
@@ -102,20 +117,12 @@ class _ListAllFruitsState extends State<ListAllFruits> {
                                   if (favoriteSnapshot.hasData) {
                                     final isFavorite = favoriteSnapshot.data!;
                                     return IconButton(
-                                      icon: Icon(
-                                        isFavorite
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                      ),
+                                      icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
                                       onPressed: () async {
                                         if (isFavorite) {
-                                          await FruitsStorage.removeFavoriteFruit(
-                                            fruit.id,
-                                          );
+                                          await FruitsStorage.removeFavoriteFruit(fruit.id);
                                         } else {
-                                          await FruitsStorage.addFavoriteFruit(
-                                            fruit.id,
-                                          );
+                                          await FruitsStorage.addFavoriteFruit(fruit.id);
                                         }
                                         setState(() {});
                                       },
@@ -133,22 +140,13 @@ class _ListAllFruitsState extends State<ListAllFruits> {
                   );
                 },
               );
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Ошибка загрузки фруктов'));
             } else {
-              return const Center(child: CircularProgressIndicator());
+              // Всё остальное
+              return const Center(child: Text('Нет данных'));
             }
           },
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     setState(() {
-      //       futureFruits = ListAllFruitsRepositories().getFruits();
-      //     });
-      //   },
-      //   child: Icon(Icons.refresh),
-      // ),
     );
   }
 }
